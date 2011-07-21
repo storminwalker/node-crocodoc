@@ -1,0 +1,21 @@
+{
+	"author": "Craig Walker <craig.walker@me.com>",
+	"name": "node-crocodoc",
+	"main": "./main.js",
+	"homepage": "https://github.com/storminwalker/node-crocodoc",
+	"description": "Simple wrapper around the Crocodoc API for Node",
+	"version": "0.0.1",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/storminwalker/node-crocodoc"
+	},
+  	"dependencies": {
+    	"request": ">= 1.9.x < 2.0.0"
+	},
+	"devDependencies": {
+    	"express": ">=2.x.x < 3.0.0"
+  	},
+	"engines": {
+    	"node": ">=0.4.7"
+  	}
+}
