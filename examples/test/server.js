@@ -5,7 +5,7 @@ var Crocodoc = require("../../main.js"),  //require("node-crocodoc");
 var app = express.createServer();
 
 var crocodoc = new Crocodoc({
-	token: "[KEY GOES HERE],
+	token: "[KEY GOES HERE]",
 	async: false,
 	private: false,
 	editable: false,
