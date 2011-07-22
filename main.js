@@ -8,7 +8,7 @@ var request = require("request"),
 var apiUrl = "https://crocodoc.com/api/v1"; // Crocodoc's API's base URL
 
 var defaultOptions = {
-	token: "dtSHMcKLoQGqh74rWjvF",
+	token: null,
 	async: false,
 	private: false,
 	editable: false,
@@ -61,15 +61,15 @@ var crocodoc = function(options) {
 		options = defaultOptions;	
 	}
 	this.defaultOptions = options; 
+	
+	if(! this.defaultOptions.token) throw new Error("You must supply an API token. To learn more check out http://crocodoc.com/api/");
 };
 
 crocodoc.prototype.params = function(options) {
 	return merge(options, this.defaultOptions);
 }
 
-/***
-	Upload and convert a file. This method will stream the file to crocodoc via a POST request.
-***/
+// Upload and convert a file. This method will stream the file to crocodoc via a POST request.
 crocodoc.prototype.upload = function(filePath, options, callback) {
 	if(arguments.length == 2 && typeof options === "function") {
 		callback = options;
@@ -93,8 +93,12 @@ crocodoc.prototype.upload = function(filePath, options, callback) {
 	}, callback);
 }
 
-// check the conversion status of a document...
+// Check the conversion status of a document.
 crocodoc.prototype.status = function(uuids, callback) {
+	if(toString.call(uuids) !== "[object Array]") {
+		uuids = [uuids];
+	}
+
 	if(arguments.length == 2 && typeof options === "function") {
 		callback = options;
 		options = {};
@@ -105,14 +109,11 @@ crocodoc.prototype.status = function(uuids, callback) {
 	var me = this;
 	get("/document/status", this.params(options), function(err, res, body) {
 		if(err) callback(err, null);
-	
-		var docs = JSON.parse(body);
-		callback(null, docs);
+		callback(null, JSON.parse(body));
 	});
 }
 
-
-// creates a session ID for session-based document viewing (may be used only one) ...
+// Creates a session ID for session-based document viewing (may be used only once)
 crocodoc.prototype.getSession = function(uuid, options, callback) {
 	if(arguments.length == 2 && typeof options === "function") {
 		callback = options;
@@ -132,51 +133,83 @@ crocodoc.prototype.getSession = function(uuid, options, callback) {
 	});
 }
 
-// view an embedded document. This URL returns a web page that can be embedded within an iframe...
+// Delete an uploaded file
+crocodoc.prototype.delete = function(uuid, callback) {
+	if(arguments.length == 2 && typeof options === "function") {
+		callback = options;
+		options = {};
+	}
+	
+	options.uuids = uuid;
+	
+	var me = this;
+	get("/document/delete", this.params(options), function(err, res, body) {
+		if(err) callback(err, null);
+		callback(null, JSON.parse(body));
+	});
+}
+
+// Download an uploaded file with or without annotations
+crocodoc.prototype.download = function(uuid, callback) {
+	if(arguments.length == 2 && typeof options === "function") {
+		callback = options;
+		options = {};
+	}
+	
+	options.uuids = uuid;
+	
+	var me = this;
+	get("/document/download", this.params(options), function(err, res, body) {
+		if(err) callback(err, null);
+		callback(null, JSON.parse(body));
+	});
+}
+
+// Creates a new shortId that can be used to share a document
+crocodoc.prototype.share = function(uuid, callback) {
+	if(arguments.length == 2 && typeof options === "function") {
+		callback = options;
+		options = {};
+	}
+	
+	options.uuids = uuid;
+	
+	var me = this;
+	get("/document/share", this.params(options), function(err, res, body) {
+		if(err) callback(err, null);
+		callback(null, JSON.parse(body));
+	});
+}
+
+// Clones an uploaded document. Document annotations are not copied
+crocodoc.prototype.clone = function(uuid, callback) {
+	if(arguments.length == 2 && typeof options === "function") {
+		callback = options;
+		options = {};
+	}
+	
+	options.uuids = uuid;
+	
+	var me = this;
+	get("/document/clone", this.params(options), function(err, res, body) {
+		if(err) callback(err, null);
+		callback(null, JSON.parse(body));
+	});
+}
+
+// View an embedded document. This URL returns a web page that can be embedded within an iframe.
 crocodoc.prototype.getSessionEmbeddableUrl = function(sessionId) {
 	return  "https://crocodoc.com/view/?sessionId=" + sessionId;
 }
 
+// View an embedded document. This URL returns a web page that can be embedded within an iframe.
 crocodoc.prototype.getEmbeddableUrl = function(shortId) {
 	return "http://crocodoc.com/" + shortId + "?embedded=true";
 }
 
 module.exports = crocodoc;
-/*
 
 
-
-  # "Delete an uploaded file."
-  def delete(uuid, options = {})
-    options.merge! :uuid => uuid
-    _shake_and_stir_params(options, :uuid, :token)
-
-    _request("/document/delete", :get, options)
-  end
-
-  # "Download an uploaded file with or without annotations."
-  def download(uuid, options = {})
-    options.merge! :uuid => uuid
-    _shake_and_stir_params(options, :uuid, :annotated, :token)
-
-    _request_raw("/document/download", :get, options)
-  end
-
-  # "Creates a new 'short ID' that can be used to share a document."
-  def share(uuid, options = {})
-    options.merge! :uuid => uuid
-    _shake_and_stir_params(options, :uuid, :editable, :token)
-
-    _request("/document/share", :get, options)
-  end
-
-  # "Clones an uploaded document. Document annotations are not copied."
-  def clone(uuid, options = {})
-    options.merge! :uuid => uuid
-    _shake_and_stir_params(options, :uuid, :token)
-    
-    _request("/document/clone", :get, options)
-  end
-  */
+  
 
  
