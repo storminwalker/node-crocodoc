@@ -4,7 +4,7 @@
 	"main": "./main.js",
 	"homepage": "https://github.com/storminwalker/node-crocodoc",
 	"description": "Simple wrapper around the Crocodoc API for Node",
-	"version": "0.0.1",
+	"version": "0.0.2",
 	"repository": {
 		"type": "git",
 		"url": "https://github.com/storminwalker/node-crocodoc"

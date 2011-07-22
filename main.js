@@ -38,9 +38,9 @@ var buildUrl = function(path, options) {
 }
 
 var get = function(path, options, callback) {
-	console.log(path);
-	console.log(buildUrl(path, options));
-	console.log(options);
+	//console.log(path);
+	//console.log(buildUrl(path, options));
+	//console.log(options);
 	
 	request.get({
 		uri: buildUrl(path, options),
